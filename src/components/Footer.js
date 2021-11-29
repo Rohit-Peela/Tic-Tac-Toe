@@ -12,7 +12,7 @@ class Footer extends Component {
   
   render() {
     return (
-      <footer className="footer">
+      <footer className="class_footer">
          <label style={fontChange}>Copyright &copy; {date}, Rohit Peela</label>
       </footer>
     );

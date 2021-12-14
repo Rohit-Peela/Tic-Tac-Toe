@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './Footer.css';
 
-const date = new Date().getFullYear();
+
 
     const fontChange = {
         fontFamily: "Nunito",
         textAlign:"center"
     }
+
+    const date = new Date().getFullYear();
 
 class Footer extends Component {
   

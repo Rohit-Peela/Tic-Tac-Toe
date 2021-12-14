@@ -3,15 +3,15 @@ import { AppContext } from '../AppProvider';
 import { GAME_TYPES, PLAYER_TURNS, ICON_CHARS } from '../common';
 import './Main.css';
 
-const ICON_PLACE_HOLDDER = 'I';
+const placeHolder = 'I';
 
 const Cell = (props) => {
   return (
     <AppContext.Consumer>
       {context => {
         const value = context.cells[props.index];
-        const icon = value !== null ? ICON_CHARS[value] : ICON_PLACE_HOLDDER;
-        const isDoneClass = icon !== ICON_PLACE_HOLDDER ? 'done' : '';
+        const icon = value !== null ? ICON_CHARS[value] : placeHolder;
+        const isDoneClass = icon !== placeHolder ? 'done' : '';
 
         return (
           <button

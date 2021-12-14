@@ -1,12 +1,4 @@
-.app {
-  width: 100%;
-  max-width: 640px;
-  min-width: 360px;
-  margin: 50px auto;
-  background-color: #5D3B3F;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 30px 0px;
-  border-radius: 25px;
-}
+
 
 @media (max-width: 1400px) {
   .app {
@@ -19,4 +11,14 @@
   .app {
     margin-top: 0px;
   }
+}
+
+.app {
+  width: 100%;
+  max-width: 640px;
+  min-width: 360px;
+  margin: 50px auto;
+  background-color: #5D3B3F;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 30px 0px;
+  border-radius: 25px;
 }

@@ -3,19 +3,19 @@ import './Footer.css';
 
 
 
-    const fontChange = {
-        fontFamily: "Nunito",
-        textAlign:"center"
+    const font_style = {
+        textAlign:"center",
+        fontFamily: "Nunito"
+        
     }
 
-    const date = new Date().getFullYear();
 
 class Footer extends Component {
   
   render() {
     return (
-      <footer className="class_footer">
-         <label style={fontChange}>Copyright &copy; {date}, Rohit Peela</label>
+      <footer className="foot">
+         <label style={font_style}>Copyright &copy; {new Date().getFullYear()}, Rohit Peela</label>
       </footer>
     );
   }

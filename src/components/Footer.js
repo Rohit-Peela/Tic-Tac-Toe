@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './Footer.css';
 
 
 
@@ -9,12 +8,21 @@ import './Footer.css';
         
     }
 
+    const footer = {
+      display:"flex",
+      justifyContent:"center",
+      padding:"10px",
+      padding:"20px",
+      color:"aliceblue",
+      textAlign:"center"
+    }
+
 
 class Footer extends Component {
   
   render() {
     return (
-      <footer className="foot">
+      <footer style={footer} >
          <label style={font_style}>Copyright &copy; {new Date().getFullYear()}, Rohit Peela</label>
       </footer>
     );

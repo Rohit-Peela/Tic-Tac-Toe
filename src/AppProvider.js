@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {
-  GAME_TYPES, PLAYER_TURNS,
+  TYPE_OF_PLAY, CHECK_MOVE,
   checkGameState, getRandom, replace,
   findBestMove, findRandomMove
 } from './common';
 
-const THINKING_TIME = 500;
+const brain_time = 500;
 
 export const AppContext = React.createContext();
 
 export default class AppProvider extends Component {
   initState = {
-    gameType: GAME_TYPES.TWO_PLAYERS,
+    gameType: TYPE_OF_PLAY.LOCAL,
     currentIcon: getRandom(0, 2),
     playerTurn: getRandom(0, 2),
     cells: new Array(9).fill(null),
@@ -29,6 +29,8 @@ export default class AppProvider extends Component {
     cells: this.initState.cells,
     gameState: this.initState.gameState,
 
+
+
     changeType: (type) => {
       if (this.state.gameType !== type) {
         this.initNewGame(type);
@@ -42,9 +44,12 @@ export default class AppProvider extends Component {
     }
   }
 
+
+
+
   initGame = () => {
-    if (this.state.gameType === GAME_TYPES.VERSUS_COMPUTER &&
-      this.state.playerTurn === PLAYER_TURNS.COMPUTER) {
+    if (this.state.gameType === TYPE_OF_PLAY.COMPUTER &&
+      this.state.playerTurn === CHECK_MOVE.COMPUTER) {
 
       if (this.timeout) {
         clearTimeout(this.timeout);
@@ -53,7 +58,7 @@ export default class AppProvider extends Component {
       this.timeout = setTimeout(() => {
         const randomMove = findRandomMove(this.state.cells);
         this.computerPlay(randomMove);
-      }, THINKING_TIME);
+      }, brain_time);
     }
   }
 
@@ -88,19 +93,19 @@ export default class AppProvider extends Component {
 
   humanPlay = (index) => {
     if (this.state.gameState.position === "" && this.state.cells[index] === null &&
-      (this.state.gameType === GAME_TYPES.TWO_PLAYERS || this.state.playerTurn === PLAYER_TURNS.HUMAN)) {
+      (this.state.gameType === TYPE_OF_PLAY.LOCAL || this.state.playerTurn === CHECK_MOVE.LOCAL)) {
 
       this.setState(prevState => {
         return this.applyState(prevState, index);
       }, () => {
         // Make a move for computer if the game is in 'versus computer' mode
         if (this.state.gameState.position === "" &&
-          this.state.gameType === GAME_TYPES.VERSUS_COMPUTER &&
-          this.state.playerTurn === PLAYER_TURNS.COMPUTER) {
+          this.state.gameType === TYPE_OF_PLAY.COMPUTER &&
+          this.state.playerTurn === CHECK_MOVE.COMPUTER) {
 
           setTimeout(() => {
             this.makeAIMove();
-          }, THINKING_TIME);
+          }, brain_time);
         }
       });
     }
@@ -108,8 +113,8 @@ export default class AppProvider extends Component {
 
   computerPlay = (index) => {
     if (this.state.gameState.position === "" && this.state.cells[index] === null &&
-      this.state.gameType === GAME_TYPES.VERSUS_COMPUTER &&
-      this.state.playerTurn === PLAYER_TURNS.COMPUTER) {
+      this.state.gameType === TYPE_OF_PLAY.COMPUTER &&
+      this.state.playerTurn === CHECK_MOVE.COMPUTER) {
 
       this.setState(prevState => this.applyState(prevState, index));
     }

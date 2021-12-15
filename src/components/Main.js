@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AppContext } from '../AppProvider';
-import { GAME_TYPES, PLAYER_TURNS, ICON_CHARS } from '../common';
+import { TYPE_OF_PLAY, CHECK_MOVE, USER_ICON } from '../common';
 import './Main.css';
 
 const placeHolder = 'I';
@@ -10,7 +10,7 @@ const Cell = (props) => {
     <AppContext.Consumer>
       {context => {
         const value = context.cells[props.index];
-        const icon = value !== null ? ICON_CHARS[value] : placeHolder;
+        const icon = value !== null ? USER_ICON[value] : placeHolder;
         const isDoneClass = icon !== placeHolder ? 'done' : '';
 
         return (
@@ -75,18 +75,18 @@ class Main extends Component {
     if (this.context.gameState.isTie) {
       textInfo = 'Tie!';
     } else {
-      if (this.context.gameType === GAME_TYPES.TWO_PLAYERS) {
+      if (this.context.gameType === TYPE_OF_PLAY.LOCAL) {
         if (this.context.gameState.position === "") {
-          textInfo = `It's player(${ICON_CHARS[currentIconType]}) turn`;
+          textInfo = `It's player(${USER_ICON[currentIconType]}) turn`;
         } else {
-          textInfo = `Player(${ICON_CHARS[1 - currentIconType]}) wins!`;
+          textInfo = `Player(${USER_ICON[1 - currentIconType]}) wins!`;
         }
       } else {
         if (this.context.gameState.position === "") {
-          if (this.context.playerTurn === PLAYER_TURNS.HUMAN) textInfo = `It's your turn`;
+          if (this.context.playerTurn === CHECK_MOVE.LOCAL) textInfo = `It's your turn`;
           else textInfo = `It's computer turn`;
         } else {
-          if (this.context.playerTurn === PLAYER_TURNS.HUMAN) textInfo = `Computer win!`;
+          if (this.context.playerTurn === CHECK_MOVE.LOCAL) textInfo = `Computer win!`;
           else textInfo = `You win!`;
         }
       }

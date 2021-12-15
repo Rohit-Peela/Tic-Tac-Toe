@@ -1,17 +1,12 @@
-export const GAME_TYPES = {
-  TWO_PLAYERS: 0,
-  VERSUS_COMPUTER: 1
+export const TYPE_OF_PLAY = {
+  LOCAL: 0,
+  COMPUTER: 1
 }
 
-export const ICON_TYPES = {
-  O: 0,
-  X: 1
-}
+export const USER_ICON = ['O', 'X'];
 
-export const ICON_CHARS = ['O', 'X'];
-
-export const PLAYER_TURNS = {
-  HUMAN: 0,
+export const CHECK_MOVE = {
+  LOCAL: 0,
   COMPUTER: 1
 }
 
@@ -26,34 +21,51 @@ const isMoveLeft = (cells) => {
   return emptyCells.length > 0;
 }
 
+const line1 = [0, 1, 2];
+const line2 = [2, 4, 6];
+const line3 = [3, 4, 5];
+const line4 = [0, 4, 8];
+const line5 = [6, 7, 8];
+const line6 = [2, 5, 8];
+const line7 = [0, 3, 6];
+const line8 = [1, 4, 7];
+
 export const checkGameState = (cells) => {
   const lines = [
-    [0, 1, 2],
-    [3, 4, 5], 
-    [6, 7, 8], 
-    [0, 3, 6], 
-    [1, 4, 7], 
-    [2, 5, 8], 
-    [0, 4, 8], 
-    [2, 4, 6] 
+    line1,
+    line3, 
+    line5, 
+    line7, 
+    line8, 
+    line6, 
+    line4, 
+    line2 
   ];
 
   let position = "";
+  let pointer = 0;
+  while (pointer < lines.length) {
+    const [first, second, third] = lines[pointer];
+    //this.compute(position,pointer, first, second, third, cells);
 
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
+    // if(equalCheck(first, second, third)) {
 
-    if (cells[a] !== null && cells[a] === cells[b] && cells[a] === cells[c]) {
-      if (i >= 0 && i <= 2) position = `h h${i}`;
-      else if (i >= 3 && i <= 5) position = `v v${i - 3}`;
-      else position = `d${i - 6}`;
+    // }
+
+    if (equalCheck(first, second, third, cells)) {
+      if (pointer >= 0 && pointer <= 2) position = `h h${pointer}`;
+      else if (pointer>= 3 && pointer <= 5) position = `v v${pointer - 3}`;
+      else position = `d${pointer - 6}`;
 
       return {
         position,
-        iconType: cells[a],
+        iconType: cells[first],
         isTie: null
       }
+      //compute(position, pointer, first, second, third, cells);
     }
+
+    pointer++;
   }
 
   return {
@@ -61,6 +73,23 @@ export const checkGameState = (cells) => {
     iconType: null,
     isTie: isMoveLeft(cells) ? null : true
   };
+}
+
+ export const equalCheck = (x,y,w, grid) => {
+   return grid[x] !== null && grid[x] === grid[y] && grid[x] === grid[w];
+}
+
+export const compute = (position, pointer, a, b, c, cells) => {
+    if (pointer >= 0 && pointer <= 2) position = `h h${pointer}`;
+    else if (pointer>= 3 && pointer <= 5) position = `v v${pointer - 3}`;
+    else position = `d${pointer - 6}`;
+
+    return {
+      position,
+      iconType: cells[a],
+      isTie: null
+    }
+  
 }
 
 export const getRandom = (start, end) => {
@@ -71,9 +100,7 @@ export const replace = (cells, index, value) => {
   return [...cells.slice(0, index), value, ...cells.slice(index + 1, cells.length)];
 }
 
-/**
- * Random move
- */
+
 export const findRandomMove = (cells) => {
   const emptyCells = getEmptyCells(cells);
 
@@ -87,76 +114,47 @@ export const findRandomMove = (cells) => {
   return null;
 }
 
-/**
- * Find best move based on Minimax algorithm
- */
-const evaluate = (cells, computerType) => {
-  const lines = [
-    [0, 1, 2], // h.h0
-    [3, 4, 5], // h.h1 
-    [6, 7, 8], // h.h2
-    [0, 3, 6], // v.v0
-    [1, 4, 7], // v.v1
-    [2, 5, 8], // v.v2
-    [0, 4, 8], // d.d0
-    [2, 4, 6]  // d.d1
-  ];
-
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-
-    if (cells[a] !== null && cells[a] === cells[b] && cells[a] === cells[c]) {
-      if (cells[a] === computerType) return 10;
-      return -10;
-    }
-  }
-
-  return 0;
-}
 
 const minimax = (cells, depth, computerType, isMax) => {
   const score = evaluate(cells, computerType);
 
-  // If Maximizer has won the game return his/her evaluated score 
   if (score === 10) return score - depth;
 
-  // If Minimizer has won the game return his/her evaluated score 
   if (score === -10) return score + depth;
 
-  // If there are no more moves and no winner then it is a tie 
   if (!isMoveLeft(cells)) return 0;
 
-  const lengthCells = cells.length;
+  const len = cells.length;
   let best;
 
-  // If this maximizer's move 
   if (isMax) {
     best = -1000;
 
-    for (let i = 0; i < lengthCells; i++) {
-      const cell = cells[i];
+    let pointer = 0;
+    while (pointer < len) {
+      const cell = cells[pointer];
 
       if (cell === null) {
-        // Make a move
-        const nextCells = replace(cells, i, computerType);
+        const nextCells = [...cells.slice(0, pointer), computerType, ...cells.slice(pointer + 1, cells.length)];
 
-        // Call minimax recursively and choose the maximum value
         best = Math.max(best, minimax(nextCells, depth + 1, computerType, !isMax));
       }
+
+      pointer++;
     }
   } else {
     best = 1000;
-
-    for (let i = 0; i < lengthCells; i++) {
-      const cell = cells[i];
+    let pointer = 0;
+    while (pointer < len) {
+      const cell = cells[pointer];
 
       if (cell === null) {
-        // Make a move
-        const nextCells = replace(cells, i, 1 - computerType);
+        const nextCells = [...cells.slice(0, pointer), computerType, ...cells.slice(pointer + 1, cells.length)];
 
-        // Call minimax recursively and choose the minimum value
         best = Math.min(best, minimax(nextCells, depth + 1, computerType, !isMax));
       }
+
+      pointer++;
     }
   }
 
@@ -167,25 +165,51 @@ export const findBestMove = (cells, computerType) => {
   let bestVal = -1000;
   let bestMove = null;
 
-  const lengthCells = cells.length;
-
-  for (let i = 0; i < lengthCells; i++) {
-    const cell = cells[i];
+  const len = cells.length;
+  let pointer = 0;
+  while (pointer < len) {
+    const cell = cells[pointer];
 
     if (cell === null) {
-      // Make a move
-      const nextCells = replace(cells, i, computerType);
+      const nextCells = [...cells.slice(0, pointer), computerType, ...cells.slice(pointer + 1, cells.length)];
 
-      // Compute evaluation function for this move. 
       const moveVal = minimax(nextCells, 0, computerType, false);
 
-      // If the value of the current move is more than the best value, then update best
       if (moveVal > bestVal) {
         bestVal = moveVal;
-        bestMove = i;
+        bestMove = pointer;
       }
     }
+
+    pointer++;
   }
 
   return bestMove;
+}
+
+const evaluate = (cells, computerType) => {
+  const lines = [
+    line1,
+    line3, 
+    line5, 
+    line7, 
+    line8, 
+    line6, 
+    line4, 
+    line2 
+  ];
+
+  let pointer = 0;
+  while (pointer < lines.length) {
+    const [a, b, c] = lines[pointer];
+
+    if (equalCheck(a, b, c, cells)) {
+      if (cells[a] === computerType) return 10;
+      return -10;
+    }
+
+    pointer++;
+  }
+
+  return 0;
 }

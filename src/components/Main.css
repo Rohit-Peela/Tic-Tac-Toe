@@ -10,8 +10,6 @@
   font-size: 1.5rem;
 }
 
-/* Draw winning line*/
-
 .main>.board {
   position: relative;
 }
@@ -25,8 +23,6 @@
   -moz-transition: 0.7s;
   -o-transition: 0.7s;
 }
-
-/* Horizonal Lines */
 
 .main>.board.h::after {
   width: 0%;
@@ -51,8 +47,6 @@
   top: calc(5 * 100% / 6);
 }
 
-/* Vertical Lines */
-
 .main>.board.v::after {
   height: 0%;
   width: 3px;
@@ -75,8 +69,6 @@
 .main>.board.v2::after {
   left: calc(5 * 100% / 6);
 }
-
-/* Diagonal Lines */
 
 .main>.board.d0::after {
   height: 0%;
@@ -111,8 +103,6 @@
 .main>.board.d1.full::after {
   height: 140%;
 }
-
-/* Draw winning line*/
 
 .main>.board>.board-row {
   display: flex;

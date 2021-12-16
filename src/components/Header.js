@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { AppContext } from '../AppProvider';
 import { TYPE_OF_PLAY } from '../common';
 
 const header = {
@@ -60,15 +59,11 @@ const TypeOfGame = (props) => {
     const { value, name } = props;
 
     return (
-      <AppContext.Consumer>
-        {context => (
-          <li 
-            onClick={() => context.changeType(value)}
-            style={link}> 
-            {name} 
-          </li>
-        )}
-      </AppContext.Consumer>
+      <li 
+        onClick={() => props.changeType(value)}
+        style={link}> 
+        {name} 
+      </li>
     )
 }
 
@@ -78,17 +73,19 @@ class Header extends Component {
       <header style={header} >
         <h1 style={heading}>Tic Tac Toe</h1>
         <ul style={unorderedList}>
-          <button style={buttonStyle}><TypeOfGame value={TYPE_OF_PLAY.LOCAL} name="Play Local" /></button>
-          <button style={buttonStyle}><TypeOfGame value={TYPE_OF_PLAY.COMPUTER} name="Play with Computer" /></button>
+          <button style={buttonStyle}>
+            <TypeOfGame value={TYPE_OF_PLAY.LOCAL} name="Play Local" changeType={this.props.changeType} />
+          </button>
+          <button style={buttonStyle}>
+            <TypeOfGame value={TYPE_OF_PLAY.COMPUTER} name="Play with Computer" changeType={this.props.changeType} />
+          </button>
         </ul>
         <div>
-          <button style={buttonStyle} onClick={() => this.context.newGame()}>New Game</button>
+          <button style={buttonStyle} onClick={() => this.props.newGame()}>New Game</button>
         </div>
       </header>
     );
   }
 }
-
-Header.contextType = AppContext;
 
 export default Header;

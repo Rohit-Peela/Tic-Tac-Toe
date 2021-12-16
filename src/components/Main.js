@@ -1,27 +1,19 @@
 import React, { Component } from 'react';
-import { AppContext } from '../AppProvider';
 import { TYPE_OF_PLAY, CHECK_MOVE, USER_ICON } from '../common';
 import './Main.css';
 
 const placeHolder = 'I';
 
 const Cell = (props) => {
+  const value = props.cells[props.index];
+  const icon = value !== null ? USER_ICON[value] : placeHolder;
+  const isDoneClass = icon !== placeHolder ? 'done' : '';
   return (
-    <AppContext.Consumer>
-      {context => {
-        const value = context.cells[props.index];
-        const icon = value !== null ? USER_ICON[value] : placeHolder;
-        const isDoneClass = icon !== placeHolder ? 'done' : '';
-
-        return (
           <button
             className={`cell cell-${props.index} ${isDoneClass}`}
-            onClick={() => context.humanPlay(props.index)}>
+            onClick={() => props.humanPlay(props.index)}>
             {icon}
           </button>
-        )
-      }}
-    </AppContext.Consumer>
   )
 }
 
@@ -32,7 +24,7 @@ class Board extends Component {
   }
 
   componentDidUpdate() {
-    if (this.context.gameState.position !== "") {
+    if (this.props.gameState.position !== "") {
       setTimeout(() => {
         this.boardRef.current.classList.add('full');
       }, 50);
@@ -43,50 +35,49 @@ class Board extends Component {
 
   render() {
     return (
-      <div className={`board ${this.context.gameState.position}`} ref={this.boardRef}>
+      <div className={`board ${this.props.gameState.position}`} ref={this.boardRef}>
         <div className="board-row">
-          <Cell index={0} />
-          <Cell index={1} />
-          <Cell index={2} />
+          <Cell index={0} cells={this.props.cells} humanPlay={this.props.humanPlay} />
+          <Cell index={1} cells={this.props.cells} humanPlay={this.props.humanPlay} />
+          <Cell index={2} cells={this.props.cells} humanPlay={this.props.humanPlay} />
         </div>
 
         <div className="board-row">
-          <Cell index={3} />
-          <Cell index={4} />
-          <Cell index={5} />
+          <Cell index={3} cells={this.props.cells} humanPlay={this.props.humanPlay} />
+          <Cell index={4} cells={this.props.cells} humanPlay={this.props.humanPlay} />
+          <Cell index={5} cells={this.props.cells} humanPlay={this.props.humanPlay} />
         </div>
 
         <div className="board-row">
-          <Cell index={6} />
-          <Cell index={7} />
-          <Cell index={8} />
+          <Cell index={6} cells={this.props.cells} humanPlay={this.props.humanPlay}/>
+          <Cell index={7} cells={this.props.cells} humanPlay={this.props.humanPlay} />
+          <Cell index={8} cells={this.props.cells} humanPlay={this.props.humanPlay} />
         </div>
       </div>
     )
   }
 }
-Board.contextType = AppContext;
 
 class Main extends Component {
   render() {
     let textInfo = '';
-    const currentIconType = this.context.currentIcon;
+    const currentIconType = this.props.currentIcon;
 
-    if (this.context.gameState.isTie) {
+    if (this.props.gameState && this.props.gameState.isTie) {
       textInfo = 'Tie!';
     } else {
-      if (this.context.gameType === TYPE_OF_PLAY.LOCAL) {
-        if (this.context.gameState.position === "") {
+      if (this.props.gameType === TYPE_OF_PLAY.LOCAL) {
+        if (this.props.gameState.position === "") {
           textInfo = `It's player(${USER_ICON[currentIconType]}) turn`;
         } else {
           textInfo = `Player(${USER_ICON[1 - currentIconType]}) wins!`;
         }
       } else {
-        if (this.context.gameState.position === "") {
-          if (this.context.playerTurn === CHECK_MOVE.LOCAL) textInfo = `It's your turn`;
+        if (this.props.gameState.position === "") {
+          if (this.props.playerTurn === CHECK_MOVE.LOCAL) textInfo = `It's your turn`;
           else textInfo = `It's computer turn`;
         } else {
-          if (this.context.playerTurn === CHECK_MOVE.LOCAL) textInfo = `Computer win!`;
+          if (this.props.playerTurn === CHECK_MOVE.LOCAL) textInfo = `Computer win!`;
           else textInfo = `You win!`;
         }
       }
@@ -95,11 +86,10 @@ class Main extends Component {
     return (
       <main className="main">
         <div className="info">{textInfo}</div>
-        <Board />
+        <Board {...this.props} />
       </main>
     );
   }
 }
-Main.contextType = AppContext;
 
 export default Main;

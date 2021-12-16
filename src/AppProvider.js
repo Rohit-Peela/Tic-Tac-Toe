@@ -4,10 +4,13 @@ import {
   checkGameState, getRandom, replace,
   findBestMove, findRandomMove
 } from './common';
+import Footer from './components/Footer';
+import Header from './components/Header';
+import Main from './components/Main';
 
 const brain_time = 500;
 
-export const AppContext = React.createContext();
+// export const AppContext = React.createContext();
 
 export default class AppProvider extends Component {
   initState = {
@@ -134,9 +137,19 @@ export default class AppProvider extends Component {
 
   render() {
     return (
-      <AppContext.Provider value={this.state}>
-        {this.props.children}
-      </AppContext.Provider>
+          <div style={{
+            width:"100%",
+            maxWidth:"640px",
+            minWidth:"360px",
+            margin:"50px auto",
+            backgroundColor:"#5D3B3F",
+            boxShadow:"rgba(0, 0, 0, 0.2) 0px 5px 30px 0px",
+            borderRadius:"25px"
+          }} >
+            <Header {...this.state} />
+            <Main {...this.state} />
+            <Footer {...this.state} />
+          </div>
     );
   }
 }

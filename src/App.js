@@ -18,11 +18,11 @@ class App extends Component {
   render() {
     return (
       <AppProvider>
-        <div style={appClass} >
+        {/* <div style={appClass} >
           <Header />
           <Main />
           <Footer />
-        </div>
+        </div> */}
       </AppProvider>
     );
   }
